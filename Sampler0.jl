@@ -10,7 +10,7 @@ type Sampler
 end
 
 # Constructor
-function Sampler(num_particles)
+function Sampler(num_particles::Int64)
   # Make the particles
   particles = Model[]
   for i in 1:num_particles
@@ -28,14 +28,14 @@ end
 
 # Initialise function
 # Generates particles from prior
-function initialise!(sampler)
+function initialise!(sampler::Sampler)
   for i in 1:sampler.num_particles
     from_prior!(sampler.particles[i])
   end
 end
 
 # Update function
-function update!(sampler)
+function update!(sampler::Sampler)
   # Choose a scalar to use as a threshold (use rejection sampling to choose
   # using the probabilities defined by 'direction')
   which = 0

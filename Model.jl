@@ -13,13 +13,13 @@ function Model()
 end
 
 # Initialise model parameters from the prior
-function from_prior!(model)
+function from_prior!(model::Model)
   model.params = rand(model.N)
   compute_scalars!(model)
 end
 
 # Perturb model parameters
-function perturb!(model)
+function perturb!(model::Model)
   which = rand(1:model.N)
   model.params[which] += randh()
   model.params[which] = mod(model.params[which], 1.)
@@ -28,7 +28,7 @@ function perturb!(model)
 end
 
 # Calculate the scalars
-function compute_scalars!(model)
+function compute_scalars!(model::Model)
   model.scalars[1] = 0.
   model.scalars[2] = 0.
   for i in 1:model.N
