@@ -44,6 +44,7 @@ function logp_mix(logZ::Array{Float64, 1}, x::Float64)
   return logsumexp(terms)
 end
 
+# Do the iteration procedure and plot the logZs as we go
 plt.ion()
 plt.hold(false)
 for i in 1:100
@@ -55,4 +56,19 @@ for i in 1:100
   plt.draw()
   println(exp(logZ))
 end
+plt.ioff()
+
+# Evaluate the mixture at all the points
+logp = zeros(length(x))
+for i in 1:length(x)
+  logp[i] = logp_mix(logZ, x[i])
+  println(i)
+end
+
+# Histogram of the raw data, and a representation of U(0, 1) by dividing
+# out the mixture density
+plt.hist(x, 100, normed=true, alpha=0.2)
+plt.hold(true)
+plt.hist(x, 100, weights=exp(-logp), normed=true, alpha=0.2, color=[1., 0., 0.])
+plt.show()
 
