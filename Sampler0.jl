@@ -7,6 +7,7 @@ type Sampler
   steps::Int64
   skip::Int64
   keep::Array{Float64, 2}
+  logX::Array{Float64, 1}
 end
 
 # Constructor
@@ -17,7 +18,7 @@ function Sampler(num_particles::Int64)
     push!(particles, Model())
   end
 
-  return Sampler(num_particles, particles, 10000, 10, zeros(1000, 2))
+  return Sampler(num_particles, particles, 10000, 10, zeros(1000, 2), [])
 end
 
 # Initialise function
@@ -54,5 +55,14 @@ function calculate_logx(sampler::Sampler, scalars::Array{Float64, 1})
     end
   end
   return log(above/size(sampler.keep)[1])
+end
+
+# Calculate logX of all points
+function calculate_logX!(sampler::Sampler)
+  sampler.logX = zeros(size(sampler.keep)[1])
+  for i in 1:size(sampler.keep)[1]
+    sampler.logX[i] = calculate_logx(sampler, vec(sampler.keep[i, :]))
+    println(i)
+  end
 end
 
