@@ -17,7 +17,7 @@ function Sampler(num_particles::Int64)
     push!(particles, Model())
   end
 
-  return Sampler(num_particles, particles, 10000, 10, zeros(10000, 2))
+  return Sampler(num_particles, particles, 10000, 10, zeros(1000, 2))
 end
 
 # Initialise function
@@ -40,8 +40,19 @@ function update!(sampler::Sampler)
     end
 
     if rem(i, sampler.skip) == 0
-      sampler.keep[i, :] = sampler.particles[which].scalars
+      sampler.keep[i/sampler.skip, :] = sampler.particles[which].scalars
     end
   end
+end
+
+# Calculate logX of a point
+function calculate_logx(sampler::Sampler, scalars::Array{Float64, 1})
+  above = 0
+  for i in 1:size(sampler.keep)[1]
+    if all(vec(sampler.keep[i, :]) .>= scalars)
+      above += 1
+    end
+  end
+  return log(above/size(sampler.keep)[1])
 end
 
