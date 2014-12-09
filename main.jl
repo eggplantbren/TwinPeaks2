@@ -2,27 +2,23 @@ using PyCall
 @pyimport matplotlib.pyplot as plt
 include("Sampler0.jl")
 
-srand(0)
+srand(1)
 
 sampler = Sampler(1)
 initialise!(sampler)
 update!(sampler)
+(level, logX, good) = create_level(sampler)
+println(logX)
 
-plt.plot(sampler.keep[:,1], sampler.keep[:,2], "bo", markersize=3, alpha=0.2)
-plt.show()
-
-N = 101
-s1 = linspace(-6, -3, N)
-s2 = linspace(35, 65, N)
-logX = zeros(N, N)
-
-for j in 1:N
-  for i in 1:N
-    logX[i, j] = calculate_logx(sampler, [s1[j], s2[N-i+1]])
+for i in 1:size(sampler.keep_scalars)[1]
+  color = "ro"
+  if good[i]
+    color = "go"
   end
-  println(j)
+  plt.plot(sampler.keep_scalars[i,1], sampler.keep_scalars[i,2],
+           color, markersize=5)
 end
 
-plt.imshow(logX, extent=[-6, -3, 35, 65], interpolation="nearest", aspect="auto")
+plt.plot(level[1], level[2], "ko", markersize=20, alpha=0.2)
 plt.show()
 
