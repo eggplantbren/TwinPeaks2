@@ -1,24 +1,19 @@
 using PyCall
 @pyimport matplotlib.pyplot as plt
-include("Sampler0.jl")
 
-srand(1)
+include("Sampler.jl")
+include("Results.jl")
 
-sampler = Sampler(1)
+# Create sampler and results object
+sampler = Sampler(10)
 initialise!(sampler)
-update!(sampler)
-(level, logX, good) = create_level(sampler)
-println(logX)
+results = Results()
 
-for i in 1:size(sampler.keep_scalars)[1]
-  color = "ro"
-  if good[i]
-    color = "go"
-  end
-  plt.plot(sampler.keep_scalars[i,1], sampler.keep_scalars[i,2],
-           color, markersize=5)
-end
+# Explore and accumulate results
+keep = explore!(sampler)
+add!(results, keep)
 
-plt.plot(level[1], level[2], "ko", markersize=20, alpha=0.2)
+println(logX([-5., 50.], results))
+plt.plot(keep[:,1], keep[:,2], "b.")
 plt.show()
 
